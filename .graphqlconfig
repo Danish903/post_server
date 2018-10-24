@@ -1,0 +1,13 @@
+{
+   "projects": {
+      "prisma": {
+         "schemaPath": "src/generated/prisma.graphql",
+         "extensions": {
+            "prisma": "prisma/prisma.yml",
+            "endpoints": {
+               "default": "https://danish-event-app-2.herokuapp.com/danish-event-app-2/prod"
+            }
+         }
+      }
+   }
+}

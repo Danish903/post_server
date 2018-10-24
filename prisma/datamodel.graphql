@@ -1,0 +1,38 @@
+type User {
+   id: ID! @unique
+   username: String!
+   password: String!
+   email: String! @unique
+   events: [Event!]! @relation(name: "EventToUser", onDelete: CASCADE)
+   favorites: [FavoriteEvent!]! @relation(name: "LikedEvent", onDelete: CASCADE)
+   comments: [Comment!]! @relation(name: "CommentToUser", onDelete: CASCADE)
+   updatedAt: DateTime!
+   createdAt: DateTime!
+}
+type FavoriteEvent {
+   id: ID! @unique
+   event: Event! @relation(name: "FavEvent", onDelete: SET_NULL)
+   user: User! @relation(name: "LikedEvent", onDelete: SET_NULL)
+}
+type Event {
+   id: ID! @unique
+   title: String!
+   imageURL: String!
+   description: String!
+   published: Boolean! @default(value: false)
+   likes: [FavoriteEvent!]! @relation(name: "FavEvent", onDelete: CASCADE)
+   likesCount: Int! @default(value: 0)
+   host: User! @relation(name: "EventToUser", onDelete: SET_NULL)
+   comments: [Comment!]! @relation(name: "CommentToEvent", onDelete: CASCADE)
+   createdAt: DateTime!
+   updatedAt: DateTime!
+}
+
+type Comment {
+   id: ID! @unique
+   text: String!
+   user: User! @relation(name: "CommentToUser", onDelete: SET_NULL)
+   event: Event! @relation(name: "CommentToEvent", onDelete: SET_NULL)
+   createdAt: DateTime!
+   updatedAt: DateTime!
+}

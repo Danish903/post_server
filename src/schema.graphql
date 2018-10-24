@@ -1,0 +1,135 @@
+#import FavoriteEventPreviousValues , CommentOrderByInput, UserOrderByInput , EventOrderByInput from "./generated/prisma.graphql"
+
+type User {
+   id: ID!
+   favorites: [FavoriteEvent!]!
+   username: String!
+   email: String
+   password: String
+   events: [Event!]!
+   comments: [Comment!]!
+   updatedAt: String!
+   createdAt: String!
+}
+
+type FavoriteEvent {
+   id: ID!
+   event: Event!
+   user: User!
+}
+type Event {
+   id: ID!
+   title: String!
+   imageURL: String!
+   description: String!
+   published: Boolean!
+   likes: [FavoriteEvent!]!
+   likesCount: Int!
+   host: User!
+   comments: [Comment!]!
+   updatedAt: String!
+   createdAt: String!
+}
+type Comment {
+   id: ID!
+   text: String!
+   user: User!
+   event: Event!
+   createdAt: DateTime!
+   updatedAt: DateTime!
+}
+
+type Query {
+   users(
+      query: String
+      first: Int
+      skip: Int
+      after: String
+      orderBy: UserOrderByInput
+   ): [User!]!
+   me: User!
+   events(
+      query: String
+      first: Int
+      skip: Int
+      after: String
+      orderBy: EventOrderByInput
+   ): [Event!]!
+   event(id: ID!): Event!
+   getComment(eventId: ID!, orderBy: CommentOrderByInput): [Comment!]!
+   getFavoriteEvent(eventId: ID!): [FavoriteEvent]!
+}
+
+type Mutation {
+   login(data: LoginUserInput!): AuthPayload!
+   createUser(data: CreateUserInput!): AuthPayload!
+   deleteUser: User!
+   updateUser(data: UpdateUserInput!): User!
+   createEvent(data: CreateEventInput!): Event!
+   likePhoto(id: ID!): FavoriteEvent!
+   unLikePhoto(id: ID!, favId: ID!): FavoriteEvent!
+   createComment(data: CreateCommentInput!): Comment!
+   deleteComment(id: ID!): Comment!
+}
+
+type Subscription {
+   event: EventSubscriptionPayload!
+   comment(eventId: ID!): CommentSubscriptionPayload!
+   favoriteEvent(eventId: ID!): FavoriteEventSubscriptionPayload!
+}
+type FavoriteEventSubscriptionPayload {
+   mutation: MutationType!
+   node: FavoriteEvent
+   previousValues: PreviousValues
+}
+type CommentSubscriptionPayload {
+   mutation: MutationType!
+   node: Comment
+   previousValues: PreviousValues
+}
+
+type PreviousValues {
+   id: ID!
+}
+type EventSubscriptionPayload {
+   mutation: MutationType!
+   node: Event
+}
+input CreateEventInput {
+   title: String!
+   description: String!
+   published: Boolean!
+   imageURL: String!
+}
+
+input CreateCommentInput {
+   eventId: ID!
+   text: String!
+}
+input CreateUserInput {
+   username: String!
+   email: String!
+   password: String!
+}
+
+input UpdateUserInput {
+   username: String
+   email: String
+   password: String
+}
+
+input LoginUserInput {
+   email: String!
+   password: String!
+}
+
+enum MutationType {
+   UPDATED
+   DELETED
+   CREATED
+}
+
+type AuthPayload {
+   token: String!
+   user: User!
+}
