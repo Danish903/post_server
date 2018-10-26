@@ -168,6 +168,7 @@ const Mutation = {
    },
    deleteComment: async (_, { id }, { prisma, request }, info) => {
       const userId = getUserId(request);
+      if (!userId) throw new Error("You're not authenticated");
       const commentExist = await prisma.exists.Comment({
          id,
          user: { id: userId }
