@@ -183,6 +183,23 @@ const Mutation = {
          },
          info
       );
+   },
+   updateComment: async (_, { id, data }, { prisma, request }, info) => {
+      const userId = getUserId(request);
+
+      if (!userId) throw new Error("You are not authenticated");
+      const exists = await prisma.exists.Comment({
+         id,
+         user: { id: userId }
+      });
+      if (!exists) throw new Error("Unable to update comment");
+      return prisma.mutation.updateComment(
+         {
+            where: { id },
+            data
+         },
+         info
+      );
    }
 };
 
