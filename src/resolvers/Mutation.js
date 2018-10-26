@@ -168,21 +168,27 @@ const Mutation = {
          info
       );
    },
-   deleteComment: async (_, { id }, { prisma, request }, info) => {
+   deleteComment: async (_, { id, eventId }, { prisma, request }, info) => {
       const userId = getUserId(request);
       if (!userId) throw new Error("You're not authenticated");
       const commentExist = await prisma.exists.Comment({
          id,
          user: { id: userId }
       });
+      const isOwner = await prisma.exists.Event({
+         id: eventId,
+         host: { id: userId }
+      });
+      if (commentExist || isOwner) {
+         return prisma.mutation.deleteComment(
+            {
+               where: { id }
+            },
+            info
+         );
+      }
 
-      if (!commentExist) throw new Error("Comment doesn't exist");
-      return prisma.mutation.deleteComment(
-         {
-            where: { id }
-         },
-         info
-      );
+      throw new Error("Comment Unable to delete or comment don't  exist");
    },
    updateComment: async (_, { id, data }, { prisma, request }, info) => {
       const userId = getUserId(request);
