@@ -10,5 +10,5 @@ const options = {
 };
 
 server.start(options, () => {
-   console.log("The server is up!");
+   console.log("The server is up at 8888!");
 });

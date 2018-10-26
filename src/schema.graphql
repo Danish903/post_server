@@ -47,7 +47,7 @@ type Query {
       after: String
       orderBy: UserOrderByInput
    ): [User!]!
-   me: User!
+   me: User
    events(
       query: String
       first: Int

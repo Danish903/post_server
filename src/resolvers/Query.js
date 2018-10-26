@@ -23,7 +23,7 @@ const Query = {
 
    me(parent, args, { prisma, request }, info) {
       const userId = getUserId(request);
-
+      if (!userId) return null;
       return prisma.query.user(
          {
             where: {
