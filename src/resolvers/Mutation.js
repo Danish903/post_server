@@ -145,6 +145,7 @@ const Mutation = {
    },
    createComment: async (_, { data }, { prisma, request }, info) => {
       const userId = getUserId(request);
+      if (!userId) throw new Error("You're not authenticated");
       const eventExist = await prisma.exists.Event({
          id: data.eventId,
          published: true
