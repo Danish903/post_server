@@ -35,7 +35,7 @@
       "bcryptjs": "^2.4.3",
       "cross-fetch": "^2.2.2",
       "env-cmd": "^8.0.2",
-      "graphql": "^0.13.2",
+      "graphql": "^14.0.2",
       "graphql-cli": "^2.16.4",
       "graphql-yoga": "^1.16.7",
       "jsonwebtoken": "^8.3.0",
