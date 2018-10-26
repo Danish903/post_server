@@ -69,7 +69,7 @@ type Mutation {
    likePhoto(id: ID!): FavoriteEvent!
    unLikePhoto(id: ID!, favId: ID!): FavoriteEvent!
    createComment(data: CreateCommentInput!): Comment!
-   deleteComment(id: ID!): Comment!
+   deleteComment(id: ID!, eventId: ID!): Comment!
    updateComment(id: ID!, data: UpdateCommentInput!): Comment!
 }
 
