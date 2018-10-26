@@ -2,10 +2,10 @@ import "@babel/polyfill/noConflict";
 import server from "./server";
 
 const options = {
-   // cors: {
-   //    origin: process.env.ORIGIN,
-   //    credentials: true
-   // },
+   cors: {
+      origin: process.env.ORIGIN,
+      credentials: true
+   },
    port: process.env.PORT || 8888
 };
 
