@@ -70,6 +70,7 @@ type Mutation {
    unLikePhoto(id: ID!, favId: ID!): FavoriteEvent!
    createComment(data: CreateCommentInput!): Comment!
    deleteComment(id: ID!): Comment!
+   updateComment(id: ID!, data: UpdateCommentInput!): Comment!
 }
 
 type Subscription {
@@ -118,6 +119,9 @@ input UpdateUserInput {
    password: String
 }
 
+input UpdateCommentInput {
+   text: String
+}
 input LoginUserInput {
    email: String!
    password: String!
