@@ -29,6 +29,27 @@ const Subscription = {
          );
       }
    },
+   singleEvent: {
+      subscribe: (_, { id }, { prisma }, info) => {
+         return prisma.subscription.event(
+            {
+               where: {
+                  node: {
+                     AND: [
+                        {
+                           published: true
+                        },
+                        {
+                           id
+                        }
+                     ]
+                  }
+               }
+            },
+            info
+         );
+      }
+   },
    comment: {
       subscribe: (_, { eventId }, { prisma }, info) => {
          return prisma.subscription.comment(

@@ -101,7 +101,7 @@ const Mutation = {
          info
       );
 
-      const e = await prisma.query.event({ where: { id } }, `{ likesCount }`);
+      await prisma.query.event({ where: { id } }, `{ likesCount }`);
       await prisma.mutation.updateEvent({
          where: {
             id
@@ -110,7 +110,7 @@ const Mutation = {
             likesCount: e.likesCount + 1
          }
       });
-      console.log(e);
+
       return newFavoriteEvent;
    },
    unLikePhoto: async (_, { id, favId }, { prisma, request }, info) => {
@@ -156,7 +156,7 @@ const Mutation = {
 
       if (!eventExist)
          throw new Error(
-            "Either Post don't exist or comment is disable for this post"
+            "Either post don't exist or comment is disable for this post"
          );
       return prisma.mutation.createComment(
          {
@@ -205,6 +205,23 @@ const Mutation = {
       });
       if (!exists) throw new Error("Unable to update comment");
       return prisma.mutation.updateComment(
+         {
+            where: { id },
+            data
+         },
+         info
+      );
+   },
+   updateEvent: async (_, { id, data }, { prisma, request }, info) => {
+      const userId = getUserId(request);
+
+      if (!userId) throw new Error("You are not authenticated");
+      const exists = await prisma.exists.Event({
+         id,
+         host: { id: userId }
+      });
+      if (!exists) throw new Error("Unable to update comment");
+      return prisma.mutation.updateEvent(
          {
             where: { id },
             data
