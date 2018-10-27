@@ -1,5 +1,5 @@
 # source: https://danish-insta-app.herokuapp.com/danish-insta-app/prod
-# timestamp: Mon Oct 22 2018 04:28:22 GMT-0700 (PDT)
+# timestamp: Fri Oct 26 2018 20:03:49 GMT-0700 (Pacific Daylight Time)
 
 type AggregateComment {
   count: Int!
@@ -338,6 +338,7 @@ type Event implements Node {
   imageURL: String!
   description: String!
   published: Boolean!
+  disableComment: Boolean!
   likes(where: FavoriteEventWhereInput, orderBy: FavoriteEventOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [FavoriteEvent!]
   likesCount: Int!
   host(where: UserWhereInput): User!
@@ -361,6 +362,7 @@ input EventCreateInput {
   imageURL: String!
   description: String!
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   likes: FavoriteEventCreateManyWithoutEventInput
   host: UserCreateOneWithoutEventsInput!
@@ -387,6 +389,7 @@ input EventCreateWithoutCommentsInput {
   imageURL: String!
   description: String!
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   likes: FavoriteEventCreateManyWithoutEventInput
   host: UserCreateOneWithoutEventsInput!
@@ -397,6 +400,7 @@ input EventCreateWithoutHostInput {
   imageURL: String!
   description: String!
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   likes: FavoriteEventCreateManyWithoutEventInput
   comments: CommentCreateManyWithoutEventInput
@@ -407,6 +411,7 @@ input EventCreateWithoutLikesInput {
   imageURL: String!
   description: String!
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   host: UserCreateOneWithoutEventsInput!
   comments: CommentCreateManyWithoutEventInput
@@ -432,6 +437,8 @@ enum EventOrderByInput {
   description_DESC
   published_ASC
   published_DESC
+  disableComment_ASC
+  disableComment_DESC
   likesCount_ASC
   likesCount_DESC
   createdAt_ASC
@@ -446,6 +453,7 @@ type EventPreviousValues {
   imageURL: String!
   description: String!
   published: Boolean!
+  disableComment: Boolean!
   likesCount: Int!
   createdAt: DateTime!
   updatedAt: DateTime!
@@ -495,6 +503,7 @@ input EventUpdateInput {
   imageURL: String
   description: String
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   likes: FavoriteEventUpdateManyWithoutEventInput
   host: UserUpdateOneWithoutEventsInput
@@ -531,6 +540,7 @@ input EventUpdateWithoutCommentsDataInput {
   imageURL: String
   description: String
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   likes: FavoriteEventUpdateManyWithoutEventInput
   host: UserUpdateOneWithoutEventsInput
@@ -541,6 +551,7 @@ input EventUpdateWithoutHostDataInput {
   imageURL: String
   description: String
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   likes: FavoriteEventUpdateManyWithoutEventInput
   comments: CommentUpdateManyWithoutEventInput
@@ -551,6 +562,7 @@ input EventUpdateWithoutLikesDataInput {
   imageURL: String
   description: String
   published: Boolean
+  disableComment: Boolean
   likesCount: Int
   host: UserUpdateOneWithoutEventsInput
   comments: CommentUpdateManyWithoutEventInput
@@ -750,6 +762,10 @@ input EventWhereInput {
 
   """All values that are not equal to given value."""
   published_not: Boolean
+  disableComment: Boolean
+
+  """All values that are not equal to given value."""
+  disableComment_not: Boolean
   likesCount: Int
 
   """All values that are not equal to given value."""

@@ -23,6 +23,7 @@ type Event {
    imageURL: String!
    description: String!
    published: Boolean!
+   disableComment: Boolean!
    likes: [FavoriteEvent!]!
    likesCount: Int!
    host: User!
@@ -66,6 +67,7 @@ type Mutation {
    deleteUser: User!
    updateUser(data: UpdateUserInput!): User!
    createEvent(data: CreateEventInput!): Event!
+   updateEvent(id: ID!, data: UpdateEventInput!): Event!
    likePhoto(id: ID!): FavoriteEvent!
    unLikePhoto(id: ID!, favId: ID!): FavoriteEvent!
    createComment(data: CreateCommentInput!): Comment!
@@ -77,6 +79,7 @@ type Subscription {
    event: EventSubscriptionPayload!
    comment(eventId: ID!): CommentSubscriptionPayload!
    favoriteEvent(eventId: ID!): FavoriteEventSubscriptionPayload!
+   singleEvent(id: ID!): EventSubscriptionPayload!
 }
 type FavoriteEventSubscriptionPayload {
    mutation: MutationType!
@@ -101,6 +104,7 @@ input CreateEventInput {
    description: String!
    published: Boolean!
    imageURL: String!
+   disableComment: Boolean!
 }
 
 input CreateCommentInput {
@@ -118,7 +122,13 @@ input UpdateUserInput {
    email: String
    password: String
 }
-
+input UpdateEventInput {
+   title: String
+   description: String
+   published: Boolean
+   imageURL: String
+   disableComment: Boolean
+}
 input UpdateCommentInput {
    text: String
 }
