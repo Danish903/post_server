@@ -23,6 +23,7 @@ type Event {
    imageURL: String!
    description: String!
    published: Boolean!
+   disableComment: Boolean!
    likes: [FavoriteEvent!]!
    likesCount: Int!
    host: User!
@@ -101,6 +102,7 @@ input CreateEventInput {
    description: String!
    published: Boolean!
    imageURL: String!
+   disableComment: Boolean!
 }
 
 input CreateCommentInput {

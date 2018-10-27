@@ -66,6 +66,7 @@ const Mutation = {
    // Event Mutation
    createEvent: (_, { data }, { prisma, request }, info) => {
       const userId = getUserId(request);
+      if (!userId) throw new Error("You're not authenticated!");
       return prisma.mutation.createEvent(
          {
             data: {
@@ -149,10 +150,14 @@ const Mutation = {
          throw new Error("Please Signup or login to create a comment");
       const eventExist = await prisma.exists.Event({
          id: data.eventId,
-         published: true
+         published: true,
+         disableComment: false
       });
 
-      if (!eventExist) throw new Error("Post don't exist");
+      if (!eventExist)
+         throw new Error(
+            "Either Post don't exist or comment is disable for this post"
+         );
       return prisma.mutation.createComment(
          {
             data: {
