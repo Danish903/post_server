@@ -101,7 +101,7 @@ const Mutation = {
          info
       );
 
-      await prisma.query.event({ where: { id } }, `{ likesCount }`);
+      const e = await prisma.query.event({ where: { id } }, `{ likesCount }`);
       await prisma.mutation.updateEvent({
          where: {
             id

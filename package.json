@@ -7,7 +7,7 @@
       "start": "node dist/index.js",
       "heroku-postbuild": "babel src --out-dir dist --copy-files",
       "dev": "env-cmd ./config/dev.env nodemon src/index.js --ext js,graphql --exec babel-node",
-      "prod": "env-cmd ./config/prod.env nodemon src/index.js --ext js,graphql --exec babel-node",
+      "prod": "NODE_ENV=development env-cmd ./config/prod.env nodemon src/index.js --ext js,graphql --exec babel-node",
       "test": "env-cmd ./config/test.env jest --verbose --runInBand",
       "get-schema": "graphql get-schema -p prisma --dotenv config/dev.env",
       "get-schema-prod": "graphql get-schema -p prisma --dotenv config/prod.env"
