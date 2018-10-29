@@ -1,4 +1,4 @@
-#import FavoriteEventPreviousValues , CommentOrderByInput, UserOrderByInput , EventOrderByInput from "./generated/prisma.graphql"
+#import EventWhereInput, EventConnection, FavoriteEventPreviousValues , CommentOrderByInput, UserOrderByInput , EventOrderByInput from "./generated/prisma.graphql"
 
 type User {
    id: ID!
@@ -59,6 +59,15 @@ type Query {
    event(id: ID!): Event!
    getComment(eventId: ID!, orderBy: CommentOrderByInput): [Comment!]!
    getFavoriteEvent(eventId: ID!): [FavoriteEvent]!
+   eventsConnection(
+      where: EventWhereInput
+      first: Int
+      skip: Int
+      after: String
+      before: String
+      last: Int
+      orderBy: EventOrderByInput
+   ): EventConnection!
 }
 
 type Mutation {

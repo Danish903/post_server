@@ -1,3 +1,4 @@
+import { forwardTo } from "prisma-binding";
 import getUserId from "../utils/getUserId";
 
 const Query = {
@@ -37,7 +38,7 @@ const Query = {
       const opArgs = {
          first: args.first,
          skip: args.skip,
-         after: args.after,
+         after: !!args.after ? args.after : null,
          orderBy: args.orderBy,
          where: { published: true }
       };
@@ -53,6 +54,8 @@ const Query = {
       }
       return prisma.query.events(opArgs, info);
    },
+   eventsConnection: forwardTo("prisma"),
+
    event: async (_, args, { prisma }, info) => {
       const event = await prisma.query.event(
          {
