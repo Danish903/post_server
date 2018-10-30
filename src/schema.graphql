@@ -57,7 +57,12 @@ type Query {
       orderBy: EventOrderByInput
    ): [Event!]!
    event(id: ID!): Event!
-   getComment(eventId: ID!, orderBy: CommentOrderByInput): [Comment!]!
+   getComment(
+      eventId: ID!
+      first: Int
+      after: String
+      orderBy: CommentOrderByInput
+   ): [Comment!]!
    getFavoriteEvent(eventId: ID!): [FavoriteEvent]!
    eventsConnection(
       where: EventWhereInput

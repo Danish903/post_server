@@ -66,16 +66,24 @@ const Query = {
       if (!event) throw new Error("Photo not found!");
       return event;
    },
-   getComment: (_, { eventId, orderBy }, { prisma }, info) => {
-      return prisma.query.comments(
-         {
-            where: {
-               event: { id: eventId }
+   getComment: (_, args, { prisma }, info) => {
+      const opArgs = {
+         first: args.first,
+         after: !!args.after ? args.after : null,
+         orderBy: args.orderBy,
+         where: { event: { id: args.eventId } }
+      };
+      if (args.query) {
+         opArgs.where.OR = [
+            {
+               title_contains: args.query
             },
-            orderBy
-         },
-         info
-      );
+            {
+               description_contains: args.query
+            }
+         ];
+      }
+      return prisma.query.comments(opArgs, info);
    },
    getFavoriteEvent: async (_, { eventId }, { prisma, request }, info) => {
       const userId = getUserId(request, false);
