@@ -1,5 +1,5 @@
 # source: https://danish-insta-app.herokuapp.com/danish-insta-app/prod
-# timestamp: Sat Nov 10 2018 16:45:18 GMT-0800 (Pacific Standard Time)
+# timestamp: Sat Nov 10 2018 23:38:56 GMT-0800 (Pacific Standard Time)
 
 type AggregateComment {
   count: Int!
@@ -350,6 +350,7 @@ type Event implements Node {
   id: ID!
   title: String!
   imageURL: String!
+  imageURL_ID: String
   description: String!
   published: Boolean!
   disableComment: Boolean!
@@ -376,6 +377,7 @@ type EventConnection {
 input EventCreateInput {
   title: String!
   imageURL: String!
+  imageURL_ID: String
   description: String!
   published: Boolean
   disableComment: Boolean
@@ -405,6 +407,7 @@ input EventCreateOneWithoutLikesInput {
 input EventCreateWithoutCommentsInput {
   title: String!
   imageURL: String!
+  imageURL_ID: String
   description: String!
   published: Boolean
   disableComment: Boolean
@@ -418,6 +421,7 @@ input EventCreateWithoutCommentsInput {
 input EventCreateWithoutHostInput {
   title: String!
   imageURL: String!
+  imageURL_ID: String
   description: String!
   published: Boolean
   disableComment: Boolean
@@ -431,6 +435,7 @@ input EventCreateWithoutHostInput {
 input EventCreateWithoutLikesInput {
   title: String!
   imageURL: String!
+  imageURL_ID: String
   description: String!
   published: Boolean
   disableComment: Boolean
@@ -457,6 +462,8 @@ enum EventOrderByInput {
   title_DESC
   imageURL_ASC
   imageURL_DESC
+  imageURL_ID_ASC
+  imageURL_ID_DESC
   description_ASC
   description_DESC
   published_ASC
@@ -479,6 +486,7 @@ type EventPreviousValues {
   id: ID!
   title: String!
   imageURL: String!
+  imageURL_ID: String
   description: String!
   published: Boolean!
   disableComment: Boolean!
@@ -531,6 +539,7 @@ input EventSubscriptionWhereInput {
 input EventUpdateInput {
   title: String
   imageURL: String
+  imageURL_ID: String
   description: String
   published: Boolean
   disableComment: Boolean
@@ -570,6 +579,7 @@ input EventUpdateOneWithoutLikesInput {
 input EventUpdateWithoutCommentsDataInput {
   title: String
   imageURL: String
+  imageURL_ID: String
   description: String
   published: Boolean
   disableComment: Boolean
@@ -583,6 +593,7 @@ input EventUpdateWithoutCommentsDataInput {
 input EventUpdateWithoutHostDataInput {
   title: String
   imageURL: String
+  imageURL_ID: String
   description: String
   published: Boolean
   disableComment: Boolean
@@ -596,6 +607,7 @@ input EventUpdateWithoutHostDataInput {
 input EventUpdateWithoutLikesDataInput {
   title: String
   imageURL: String
+  imageURL_ID: String
   description: String
   published: Boolean
   disableComment: Boolean
@@ -756,6 +768,46 @@ input EventWhereInput {
 
   """All values not ending with the given string."""
   imageURL_not_ends_with: String
+  imageURL_ID: String
+
+  """All values that are not equal to given value."""
+  imageURL_ID_not: String
+
+  """All values that are contained in given list."""
+  imageURL_ID_in: [String!]
+
+  """All values that are not contained in given list."""
+  imageURL_ID_not_in: [String!]
+
+  """All values less than the given value."""
+  imageURL_ID_lt: String
+
+  """All values less than or equal the given value."""
+  imageURL_ID_lte: String
+
+  """All values greater than the given value."""
+  imageURL_ID_gt: String
+
+  """All values greater than or equal the given value."""
+  imageURL_ID_gte: String
+
+  """All values containing the given string."""
+  imageURL_ID_contains: String
+
+  """All values not containing the given string."""
+  imageURL_ID_not_contains: String
+
+  """All values starting with the given string."""
+  imageURL_ID_starts_with: String
+
+  """All values not starting with the given string."""
+  imageURL_ID_not_starts_with: String
+
+  """All values ending with the given string."""
+  imageURL_ID_ends_with: String
+
+  """All values not ending with the given string."""
+  imageURL_ID_not_ends_with: String
   description: String
 
   """All values that are not equal to given value."""

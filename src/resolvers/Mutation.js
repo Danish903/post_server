@@ -3,7 +3,16 @@ import bcrypt from "bcryptjs";
 import getUserId from "../utils/getUserId";
 import generateToken from "../utils/generateToken";
 import hashPassword from "../utils/hashPassword";
+import cloudinary from "cloudinary";
 
+cloudinary.config({
+   cloud_name: "dluo0wvst",
+   api_key: process.env.CLOUDINARY_API_KEY,
+   api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+console.log(process.env.CLOUDINARY_API_KEY);
+console.log(process.env.CLOUDINARY_API_SECRET);
 const Mutation = {
    async createUser(parent, args, { prisma }, info) {
       const emailTaken = await prisma.exists.User({ email: args.data.email });
@@ -77,7 +86,7 @@ const Mutation = {
          info
       );
    },
-   deletePost: async (_, { id }, { prisma, request }, info) => {
+   deletePost: async (_, { id, img_ID }, { prisma, request }, info) => {
       const userId = getUserId(request);
       if (!userId)
          throw new Error("You're not authenticated to delete this post");
@@ -86,7 +95,11 @@ const Mutation = {
          host: { id: userId }
       });
       if (!exists) throw new Error("You can't delete this post!");
-
+      console.log(img_ID);
+      cloudinary.v2.uploader.destroy(img_ID, function(error, result) {
+         console.log("here");
+         console.log(result, error);
+      });
       return prisma.mutation.deleteEvent(
          {
             where: {

@@ -21,6 +21,7 @@ type Event {
    id: ID!
    title: String!
    imageURL: String!
+   imageURL_ID: String
    description: String!
    published: Boolean!
    disableComment: Boolean!
@@ -89,7 +90,7 @@ type Mutation {
    deleteUser: User!
    updateUser(data: UpdateUserInput!): User!
    createEvent(data: CreateEventInput!): Event!
-   deletePost(id: ID!): Event!
+   deletePost(id: ID!, img_ID: String): Event!
    updateEvent(id: ID!, data: UpdateEventInput!): Event!
    likePhoto(id: ID!): FavoriteEvent!
    unLikePhoto(id: ID!, favId: ID!): FavoriteEvent!
@@ -128,6 +129,7 @@ input CreateEventInput {
    title: String!
    description: String!
    published: Boolean!
+   imageURL_ID: String!
    imageURL: String!
    disableComment: Boolean!
 }
