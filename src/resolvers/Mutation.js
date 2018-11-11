@@ -11,8 +11,6 @@ cloudinary.config({
    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-console.log(process.env.CLOUDINARY_API_KEY);
-console.log(process.env.CLOUDINARY_API_SECRET);
 const Mutation = {
    async createUser(parent, args, { prisma }, info) {
       const emailTaken = await prisma.exists.User({ email: args.data.email });
