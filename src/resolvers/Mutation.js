@@ -93,9 +93,8 @@ const Mutation = {
          host: { id: userId }
       });
       if (!exists) throw new Error("You can't delete this post!");
-      console.log(img_ID);
+
       cloudinary.v2.uploader.destroy(img_ID, function(error, result) {
-         console.log("here");
          console.log(result, error);
       });
       return prisma.mutation.deleteEvent(
