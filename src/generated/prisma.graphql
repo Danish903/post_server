@@ -1,5 +1,5 @@
 # source: https://danish-insta-app.herokuapp.com/danish-insta-app/prod
-# timestamp: Fri Oct 26 2018 20:03:49 GMT-0700 (Pacific Daylight Time)
+# timestamp: Sat Nov 10 2018 16:45:18 GMT-0800 (Pacific Standard Time)
 
 type AggregateComment {
   count: Int!
@@ -29,6 +29,7 @@ type Comment implements Node {
   event(where: EventWhereInput): Event!
   createdAt: DateTime!
   updatedAt: DateTime!
+  typeing: Boolean
 }
 
 """A connection to a list of items."""
@@ -43,6 +44,7 @@ type CommentConnection {
 
 input CommentCreateInput {
   text: String!
+  typeing: Boolean
   user: UserCreateOneWithoutCommentsInput!
   event: EventCreateOneWithoutCommentsInput!
 }
@@ -59,11 +61,13 @@ input CommentCreateManyWithoutUserInput {
 
 input CommentCreateWithoutEventInput {
   text: String!
+  typeing: Boolean
   user: UserCreateOneWithoutCommentsInput!
 }
 
 input CommentCreateWithoutUserInput {
   text: String!
+  typeing: Boolean
   event: EventCreateOneWithoutCommentsInput!
 }
 
@@ -85,6 +89,8 @@ enum CommentOrderByInput {
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  typeing_ASC
+  typeing_DESC
 }
 
 type CommentPreviousValues {
@@ -92,6 +98,7 @@ type CommentPreviousValues {
   text: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  typeing: Boolean
 }
 
 type CommentSubscriptionPayload {
@@ -135,6 +142,7 @@ input CommentSubscriptionWhereInput {
 
 input CommentUpdateInput {
   text: String
+  typeing: Boolean
   user: UserUpdateOneWithoutCommentsInput
   event: EventUpdateOneWithoutCommentsInput
 }
@@ -159,11 +167,13 @@ input CommentUpdateManyWithoutUserInput {
 
 input CommentUpdateWithoutEventDataInput {
   text: String
+  typeing: Boolean
   user: UserUpdateOneWithoutCommentsInput
 }
 
 input CommentUpdateWithoutUserDataInput {
   text: String
+  typeing: Boolean
   event: EventUpdateOneWithoutCommentsInput
 }
 
@@ -322,6 +332,10 @@ input CommentWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  typeing: Boolean
+
+  """All values that are not equal to given value."""
+  typeing_not: Boolean
   user: UserWhereInput
   event: EventWhereInput
 }
@@ -343,8 +357,10 @@ type Event implements Node {
   likesCount: Int!
   host(where: UserWhereInput): User!
   comments(where: CommentWhereInput, orderBy: CommentOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Comment!]
+  commentCount: Int
   createdAt: DateTime!
   updatedAt: DateTime!
+  typing: Boolean
 }
 
 """A connection to a list of items."""
@@ -364,6 +380,8 @@ input EventCreateInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   likes: FavoriteEventCreateManyWithoutEventInput
   host: UserCreateOneWithoutEventsInput!
   comments: CommentCreateManyWithoutEventInput
@@ -391,6 +409,8 @@ input EventCreateWithoutCommentsInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   likes: FavoriteEventCreateManyWithoutEventInput
   host: UserCreateOneWithoutEventsInput!
 }
@@ -402,6 +422,8 @@ input EventCreateWithoutHostInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   likes: FavoriteEventCreateManyWithoutEventInput
   comments: CommentCreateManyWithoutEventInput
 }
@@ -413,6 +435,8 @@ input EventCreateWithoutLikesInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   host: UserCreateOneWithoutEventsInput!
   comments: CommentCreateManyWithoutEventInput
 }
@@ -441,10 +465,14 @@ enum EventOrderByInput {
   disableComment_DESC
   likesCount_ASC
   likesCount_DESC
+  commentCount_ASC
+  commentCount_DESC
   createdAt_ASC
   createdAt_DESC
   updatedAt_ASC
   updatedAt_DESC
+  typing_ASC
+  typing_DESC
 }
 
 type EventPreviousValues {
@@ -455,8 +483,10 @@ type EventPreviousValues {
   published: Boolean!
   disableComment: Boolean!
   likesCount: Int!
+  commentCount: Int
   createdAt: DateTime!
   updatedAt: DateTime!
+  typing: Boolean
 }
 
 type EventSubscriptionPayload {
@@ -505,6 +535,8 @@ input EventUpdateInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   likes: FavoriteEventUpdateManyWithoutEventInput
   host: UserUpdateOneWithoutEventsInput
   comments: CommentUpdateManyWithoutEventInput
@@ -542,6 +574,8 @@ input EventUpdateWithoutCommentsDataInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   likes: FavoriteEventUpdateManyWithoutEventInput
   host: UserUpdateOneWithoutEventsInput
 }
@@ -553,6 +587,8 @@ input EventUpdateWithoutHostDataInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   likes: FavoriteEventUpdateManyWithoutEventInput
   comments: CommentUpdateManyWithoutEventInput
 }
@@ -564,6 +600,8 @@ input EventUpdateWithoutLikesDataInput {
   published: Boolean
   disableComment: Boolean
   likesCount: Int
+  commentCount: Int
+  typing: Boolean
   host: UserUpdateOneWithoutEventsInput
   comments: CommentUpdateManyWithoutEventInput
 }
@@ -788,6 +826,28 @@ input EventWhereInput {
 
   """All values greater than or equal the given value."""
   likesCount_gte: Int
+  commentCount: Int
+
+  """All values that are not equal to given value."""
+  commentCount_not: Int
+
+  """All values that are contained in given list."""
+  commentCount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  commentCount_not_in: [Int!]
+
+  """All values less than the given value."""
+  commentCount_lt: Int
+
+  """All values less than or equal the given value."""
+  commentCount_lte: Int
+
+  """All values greater than the given value."""
+  commentCount_gt: Int
+
+  """All values greater than or equal the given value."""
+  commentCount_gte: Int
   createdAt: DateTime
 
   """All values that are not equal to given value."""
@@ -832,6 +892,10 @@ input EventWhereInput {
 
   """All values greater than or equal the given value."""
   updatedAt_gte: DateTime
+  typing: Boolean
+
+  """All values that are not equal to given value."""
+  typing_not: Boolean
   likes_every: FavoriteEventWhereInput
   likes_some: FavoriteEventWhereInput
   likes_none: FavoriteEventWhereInput

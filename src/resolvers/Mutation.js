@@ -77,6 +77,25 @@ const Mutation = {
          info
       );
    },
+   deletePost: async (_, { id }, { prisma, request }, info) => {
+      const userId = getUserId(request);
+      if (!userId)
+         throw new Error("You're not authenticated to delete this post");
+      const exists = await prisma.exists.Event({
+         id,
+         host: { id: userId }
+      });
+      if (!exists) throw new Error("You can't delete this post!");
+
+      return prisma.mutation.deleteEvent(
+         {
+            where: {
+               id
+            }
+         },
+         info
+      );
+   },
    likePhoto: async (_, { id }, { prisma, request }, info) => {
       const userId = getUserId(request);
 
@@ -158,7 +177,7 @@ const Mutation = {
          throw new Error(
             "Either post don't exist or comment is disable for this post"
          );
-      return prisma.mutation.createComment(
+      const newComment = await prisma.mutation.createComment(
          {
             data: {
                text: data.text,
@@ -172,6 +191,22 @@ const Mutation = {
          },
          info
       );
+
+      if (Object.keys(newComment).length > 0) {
+         const e = await prisma.query.event(
+            { where: { id: data.eventId } },
+            `{commentCount}`
+         );
+         await prisma.mutation.updateEvent({
+            where: {
+               id: data.eventId
+            },
+            data: {
+               commentCount: e.commentCount + 1
+            }
+         });
+      }
+      return newComment;
    },
    deleteComment: async (_, { id, eventId }, { prisma, request }, info) => {
       const userId = getUserId(request);
@@ -185,12 +220,27 @@ const Mutation = {
          host: { id: userId }
       });
       if (commentExist || isOwner) {
-         return prisma.mutation.deleteComment(
+         const deletedComment = await prisma.mutation.deleteComment(
             {
                where: { id }
             },
             info
          );
+         if (Object.keys(deletedComment).length > 0) {
+            const e = await prisma.query.event(
+               { where: { id: eventId } },
+               `{commentCount}`
+            );
+            await prisma.mutation.updateEvent({
+               where: {
+                  id: eventId
+               },
+               data: {
+                  commentCount: e.commentCount - 1
+               }
+            });
+         }
+         return deletedComment;
       }
 
       throw new Error("Comment Unable to delete or comment don't  exist");

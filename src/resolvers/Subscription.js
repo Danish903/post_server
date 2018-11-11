@@ -1,3 +1,5 @@
+import getUserId from "../utils/getUserId";
+
 // import getUserId from "../utils/getUserId";
 
 const Subscription = {
@@ -43,6 +45,21 @@ const Subscription = {
                            id
                         }
                      ]
+                  }
+               }
+            },
+            info
+         );
+      }
+   },
+   userPost: {
+      subscribe: (_, args, { prisma, request }, info) => {
+         const userId = getUserId(request);
+         return prisma.subscription.event(
+            {
+               where: {
+                  node: {
+                     host: { id: userId }
                   }
                }
             },

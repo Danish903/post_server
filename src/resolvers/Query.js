@@ -2,7 +2,7 @@ import { forwardTo } from "prisma-binding";
 import getUserId from "../utils/getUserId";
 
 const Query = {
-   users(parent, args, { db, prisma }, info) {
+   users(parent, args, { prisma }, info) {
       const opArgs = {
          first: args.first,
          skip: args.skip,
@@ -22,6 +22,19 @@ const Query = {
       return prisma.query.users(opArgs, info);
    },
 
+   userPosts: async (_, args, { prisma, request }, info) => {
+      const userId = getUserId(request);
+      if (!userId) throw new Error("You're not authenticated");
+      const opArgs = {
+         first: args.first,
+         skip: args.skip,
+         after: args.after,
+         orderBy: args.orderBy,
+         where: { host: { id: userId } }
+      };
+
+      return prisma.query.events(opArgs, info);
+   },
    me(parent, args, { prisma, request }, info) {
       const userId = getUserId(request);
       if (!userId) return null;
@@ -56,15 +69,24 @@ const Query = {
    },
    eventsConnection: forwardTo("prisma"),
 
-   event: async (_, args, { prisma }, info) => {
-      const event = await prisma.query.event(
+   event: async (_, args, { prisma, request }, info) => {
+      const userId = getUserId(request);
+      const event = await prisma.query.events(
          {
-            where: { id: args.id }
+            where: {
+               OR: [
+                  { id: args.id, published: true },
+                  {
+                     id: args.id,
+                     host: { id: userId }
+                  }
+               ]
+            }
          },
          info
       );
       if (!event) throw new Error("Photo not found!");
-      return event;
+      return event[0];
    },
    getComment: (_, args, { prisma }, info) => {
       const opArgs = {
