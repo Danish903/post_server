@@ -1,5 +1,7 @@
 #import EventWhereInput, EventConnection, FavoriteEventPreviousValues , CommentOrderByInput, UserOrderByInput , EventOrderByInput from "./generated/prisma.graphql"
 
+scalar Upload
+
 type User {
    id: ID!
    favorites: [FavoriteEvent!]!
@@ -40,6 +42,14 @@ type Comment {
    event: Event!
    createdAt: DateTime!
    updatedAt: DateTime!
+}
+type File {
+   id: ID!
+   path: String!
+   filename: String!
+   mimetype: String!
+   encoding: String!
+   sucess: Boolean!
 }
 
 type Query {
@@ -84,12 +94,15 @@ type Query {
    ): EventConnection!
 }
 
+type Success {
+   success: Boolean!
+}
 type Mutation {
    login(data: LoginUserInput!): AuthPayload!
    createUser(data: CreateUserInput!): AuthPayload!
    deleteUser: User!
    updateUser(data: UpdateUserInput!): User!
-   createEvent(data: CreateEventInput!): Event!
+   createEvent(data: CreateEventInput!): File!
    deletePost(id: ID!, img_ID: String): Event!
    updateEvent(id: ID!, data: UpdateEventInput!): Event!
    likePhoto(id: ID!): FavoriteEvent!
@@ -97,6 +110,7 @@ type Mutation {
    createComment(data: CreateCommentInput!): Comment!
    deleteComment(id: ID!, eventId: ID!): Comment!
    updateComment(id: ID!, data: UpdateCommentInput!): Comment!
+   singleUpload(data: CreateEventInput!): Success!
 }
 
 type Subscription {
@@ -126,6 +140,7 @@ type EventSubscriptionPayload {
    previousValues: PreviousValues
 }
 input CreateEventInput {
+   file: Upload!
    title: String!
    description: String!
    published: Boolean!

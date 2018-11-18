@@ -3,3 +3,6 @@ config/
 dist/
 prisma/
 .graphqlconfig
+images/
+.DS_Store
+db.json

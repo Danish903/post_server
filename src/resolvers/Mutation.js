@@ -1,17 +1,89 @@
 import bcrypt from "bcryptjs";
-
+import { createWriteStream } from "fs";
+import shortid from "shortid";
 import getUserId from "../utils/getUserId";
 import generateToken from "../utils/generateToken";
 import hashPassword from "../utils/hashPassword";
 import cloudinary from "cloudinary";
+import lowdb from "lowdb";
+import * as mkdirp from "mkdirp";
+const FileSync = require("lowdb/adapters/FileSync");
 
+const uploadDir = "./uploads";
+const db = new lowdb(new FileSync("db.json"));
 cloudinary.config({
    cloud_name: "dluo0wvst",
    api_key: process.env.CLOUDINARY_API_KEY,
    api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
+db.defaults({ uploads: [] }).write();
+
+mkdirp.sync(uploadDir);
+
+const storeUpload = async ({ stream, filename }) => {
+   const id = shortid.generate();
+   const path = `images/${id}-${filename}`;
+
+   return new Promise((resolve, reject) =>
+      stream
+         .pipe(createWriteStream(path))
+         .on("finish", () => resolve({ id, path }))
+         .on("error", reject)
+   );
+};
+
+const processUpload = async upload => {
+   const { stream, filename, mimetype, encoding } = await upload;
+   const { id, path } = await storeUpload({ stream, filename });
+   let res_promise = new Promise((resolve, reject) => {
+      cloudinary.v2.uploader.upload(
+         path,
+         { public_id: `photoups/${id}` },
+         function(error, result) {
+            if (error) {
+               reject(error);
+            } else {
+               resolve(result);
+            }
+         }
+      );
+   });
+   return res_promise;
+};
 const Mutation = {
+   singleUpload: async (
+      parent,
+      { data: { file, ...rest } },
+      { prisma, request },
+      info
+   ) => {
+      const userId = getUserId(request);
+
+      if (!userId) throw new Error("You're not authenticated");
+      let pic = null;
+      try {
+         pic = await processUpload(file);
+      } catch (error) {
+         throw new Error("Image couldn't uploaded");
+      }
+
+      const newPost = await prisma.mutation.createEvent(
+         {
+            data: {
+               ...rest,
+               imageURL: pic.secure_url,
+               imageURL_ID: pic.public_id,
+               host: { connect: { id: userId } }
+            }
+         },
+         info
+      );
+
+      return {
+         success: true
+      };
+   },
    async createUser(parent, args, { prisma }, info) {
       const emailTaken = await prisma.exists.User({ email: args.data.email });
       const password = await hashPassword(args.data.password);
@@ -71,18 +143,26 @@ const Mutation = {
       );
    },
    // Event Mutation
-   createEvent: (_, { data }, { prisma, request }, info) => {
+   createEvent: async (
+      _,
+      { data: { image, ...rest } },
+      { prisma, request },
+      info
+   ) => {
       const userId = getUserId(request);
-      if (!userId) throw new Error("You're not authenticated!");
-      return prisma.mutation.createEvent(
-         {
-            data: {
-               ...data,
-               host: { connect: { id: userId } }
-            }
-         },
-         info
-      );
+      const pictureURL = await processUpload(image);
+      // console.log(pictureURL);
+      return pictureURL;
+      // if (!userId) throw new Error("You're not authenticated!");
+      // return prisma.mutation.createEvent(
+      //    {
+      //       data: {
+      //          ...rest,
+      //          host: { connect: { id: userId } }
+      //       }
+      //    },
+      //    info
+      // );
    },
    deletePost: async (_, { id, img_ID }, { prisma, request }, info) => {
       const userId = getUserId(request);

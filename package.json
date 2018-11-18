@@ -38,9 +38,13 @@
       "env-cmd": "^8.0.2",
       "graphql": "^0.13.2",
       "graphql-cli": "^2.16.4",
+      "graphql-upload": "^8.0.2",
       "graphql-yoga": "^1.14.10",
       "jsonwebtoken": "^8.3.0",
+      "lowdb": "^1.0.0",
+      "mkdirp": "^0.5.1",
       "prisma-binding": "^2.1.1",
+      "shortid": "^2.2.14",
       "subscriptions-transport-ws": "^0.9.15"
    },
    "devDependencies": {
